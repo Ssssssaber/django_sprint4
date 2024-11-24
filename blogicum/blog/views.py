@@ -106,6 +106,7 @@ def post_edit_view(request, post_id):
 
     return render(request, template_name, context)
 
+
 @login_required
 def post_delete_view(request, post_id):
     post = get_object_or_404(Post, pk=post_id)
@@ -202,9 +203,8 @@ def post_detail(request, post_id):
     current_date = _get_time()
     post = get_object_or_404(
         Post,
-        Q(pk=post_id, pub_date__lte=current_date,
-          category__is_published=True, is_published=True) |
-        Q(pk=post_id, author=request.user)
+        Q(pk=post_id, pub_date__lte=current_date, category__is_published=True,
+          is_published=True) | Q(pk=post_id, author=request.user)
     )
 
     comments = Comment.objects.filter(post=post)
