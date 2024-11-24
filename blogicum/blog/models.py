@@ -28,7 +28,7 @@ class Location(PublishedModel):
         verbose_name_plural = 'Местоположения'
 
     def __str__(self):
-        return self.title
+        return self.name
 
 
 class Post(PublishedModel):
@@ -46,9 +46,36 @@ class Post(PublishedModel):
     category = models.ForeignKey(Category, verbose_name=("Категория"),
                                  on_delete=models.SET_NULL, null=True)
 
+    image = models.ImageField(verbose_name='Изображение',
+                              null=True, blank=True)
+
     class Meta:
         verbose_name = 'публикация'
         verbose_name_plural = 'Публикации'
 
     def __str__(self):
         return self.title
+
+
+class Comment(PublishedModel):
+    text = models.TextField(verbose_name='текст')
+    post = models.ForeignKey(
+        Post,
+        on_delete=models.CASCADE,
+        verbose_name='комментируемая публикация',
+        related_name='comments',
+    )
+    author = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        verbose_name='автор комментария',
+        related_name='comments'
+    )
+
+    class Meta:
+        ordering = ('created_at',)
+        verbose_name = 'комментарий'
+        verbose_name_plural = 'Комментарии'
+
+    def __str__(self):
+        return self.text
